@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- LOGIN-CHECK (NEU!) -->
+  <!-- LOGIN-CHECK -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://zxzvwxktvqjctjdozfwd.supabase.co";
@@ -17,15 +17,17 @@
 
     window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // sofort prüfen
     window.supabaseClient.auth.getUser().then(({ data }) => {
       if (!data?.user) {
         window.location.href = "auth.html";
+      } else {
+        document.getElementById("appRoot").style.display = "block";
+        document.getElementById("logoutBtn").style.display = "block";
       }
     });
   </script>
 
-  <!-- Logout-Button -->
+  <!-- LOGOUT -->
   <button
     id="logoutBtn"
     class="btn btn-danger"
@@ -34,7 +36,7 @@
     🔓 Logout
   </button>
 
-  <!-- App -->
+  <!-- APP -->
   <div class="app" id="appRoot" style="display:none;">
     <header class="app-header">
       <div>
@@ -60,9 +62,7 @@
       <section class="sidebar">
         <div class="card">
           <div class="card-header">
-            <div>
-              <h2>Struktur</h2>
-            </div>
+            <h2>Struktur</h2>
           </div>
 
           <div class="card-body">
@@ -119,6 +119,7 @@
 
           <div class="card-body main-card-body">
             <div class="main-columns">
+
               <div class="left-column">
                 <div class="field">
                   <label for="noteInput" class="field-label">Notizen zum Eintrag</label>
@@ -131,7 +132,7 @@
 
                 <div id="folderActions" class="folder-actions">
                   <div class="folder-actions-header">
-                    <h3>Unterordner &amp; Dateien</h3>
+                    <h3>Unterordner & Dateien</h3>
                     <p class="muted">Nur verfügbar, wenn ein Ordner ausgewählt ist.</p>
                   </div>
                   <div class="folder-buttons">
@@ -148,9 +149,7 @@
                   <div class="upload-row">
                     <label class="field-label">Echte Dokumente hochladen</label>
                     <div class="upload-inner-row">
-                      <button id="uploadBtn" class="btn btn-secondary">
-                        📤 Dokument(e) hochladen
-                      </button>
+                      <button id="uploadBtn" class="btn btn-secondary">📤 Dokument(e) hochladen</button>
                       <input
                         type="file"
                         id="uploadInput"
@@ -170,6 +169,7 @@
                 </div>
                 <div id="globalUploadList" class="global-upload-list"></div>
               </div>
+
             </div>
           </div>
         </div>
@@ -181,7 +181,7 @@
     </main>
   </div>
 
-  <!-- Modal -->
+  <!-- MODAL -->
   <div id="appModal" class="app-modal hidden">
     <div class="app-modal-dialog">
       <div class="app-modal-header">
@@ -198,11 +198,12 @@
     </div>
   </div>
 
-  <!-- Libraries -->
+  <!-- LIBRARIES -->
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 
-  <!-- App -->
+  <!-- APP START -->
   <script type="module" src="main.js"></script>
+
 </body>
 </html>
