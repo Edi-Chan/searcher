@@ -295,14 +295,15 @@ async function handleLogoutClick() {
 // -------------------------------------------------------------
 
 async function initAuthOnLoad() {
+  // Prüfen ob User eingeloggt ist
   const { data } = await supabaseClient.auth.getUser();
 
   if (data?.user) {
-    setCurrentUser(data.user.id);
-    const tree = await loadTreeFromSupabaseOrInitialize();
-    if (onTreeLoadedCallback) onTreeLoadedCallback(tree);
-    return showAppUI();
+    // Wenn eingeloggt → direkt zur App (index.html)
+    window.location.href = "index.html";
+    return;
   }
 
+  // Wenn NICHT eingeloggt → Login/Registrierung anzeigen
   showAuthUI();
 }
