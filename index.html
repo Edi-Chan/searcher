@@ -8,7 +8,24 @@
 </head>
 <body>
 
-  <!-- Logout-Button (sichtbar nach Login) -->
+  <!-- LOGIN-CHECK (NEU!) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://zxzvwxktvqjctjdozfwd.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4enZ3eGt0dnFqY3RqZG96ZndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxODc0NDYsImV4cCI6MjA3OTc2MzQ0Nn0.2mOvG2Eu9cenktybwksbtLgmFCEQJ7XGKVrcV9kFJo0";
+
+    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // sofort prüfen
+    window.supabaseClient.auth.getUser().then(({ data }) => {
+      if (!data?.user) {
+        window.location.href = "auth.html";
+      }
+    });
+  </script>
+
+  <!-- Logout-Button -->
   <button
     id="logoutBtn"
     class="btn btn-danger"
@@ -17,8 +34,8 @@
     🔓 Logout
   </button>
 
-  <!-- NUR DIE APP (kein Login/Registrierung mehr hier) -->
-  <div class="app" id="appRoot">
+  <!-- App -->
+  <div class="app" id="appRoot" style="display:none;">
     <header class="app-header">
       <div>
         <h1>Dokumenten-Organizer</h1>
@@ -164,7 +181,7 @@
     </main>
   </div>
 
-  <!-- ZENTRIERTES POPUP-MODAL -->
+  <!-- Modal -->
   <div id="appModal" class="app-modal hidden">
     <div class="app-modal-dialog">
       <div class="app-modal-header">
@@ -181,24 +198,11 @@
     </div>
   </div>
 
-  <!-- Supabase SDK -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
-  <!-- Supabase-Client initialisieren -->
-  <script>
-    const SUPABASE_URL = "https://zxzvwxktvqjctjdozfwd.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4enZ3eGt0dnFqY3RqZG96ZndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxODc0NDYsImV4cCI6MjA3OTc2MzQ0Nn0.2mOvG2Eu9cenktybwksbtLgmFCEQJ7XGKVrcV9kFJo0";
-
-    // global verfügbar für die Module
-    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  </script>
-
-  <!-- Weitere Libraries -->
+  <!-- Libraries -->
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 
-  <!-- Einstiegspunkt der App (ES Module, lädt die anderen JS-Dateien) -->
+  <!-- App -->
   <script type="module" src="main.js"></script>
 </body>
 </html>
