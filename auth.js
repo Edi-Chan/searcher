@@ -8,7 +8,7 @@ import {
   loadTreeFromSupabaseOrInitialize,
 } from "./storage.js";
 
-// Supabase-Client aus auth.html
+// Supabase-Client aus auth.html / index.html
 const supabaseClient = window.supabaseClient || null;
 if (supabaseClient) configureSupabase(supabaseClient);
 
@@ -68,6 +68,7 @@ export function initAuth({ onTreeLoaded, onRenderApp } = {}) {
 // -------------------------------------------------------------
 
 function setAuthMessage(msg, color = "red") {
+  if (!authMessageEl) return;
   authMessageEl.textContent = msg || "";
   authMessageEl.style.color = color;
 }
@@ -75,16 +76,16 @@ function setAuthMessage(msg, color = "red") {
 function switchToRegisterMode() {
   isRegisterMode = true;
 
-  authTitleEl.textContent = "🆕 Registrierung";
+  if (authTitleEl) authTitleEl.textContent = "🆕 Registrierung";
 
-  authNameLabel.style.display = "block";
-  authNameInput.style.display = "block";
+  if (authNameLabel) authNameLabel.style.display = "block";
+  if (authNameInput) authNameInput.style.display = "block";
 
-  loginBtn.style.display = "none";
-  registerBtn.textContent = "Registrierung abschließen";
+  if (loginBtn) loginBtn.style.display = "none";
+  if (registerBtn) registerBtn.textContent = "Registrierung abschließen";
 
-  passwordHintEl.style.display = "block";
-  backToLoginBtn.style.display = "block";
+  if (passwordHintEl) passwordHintEl.style.display = "block";
+  if (backToLoginBtn) backToLoginBtn.style.display = "block";
 
   setAuthMessage("Bitte Name, E-Mail und Passwort eingeben.", "#a5f3fc");
 }
@@ -92,33 +93,37 @@ function switchToRegisterMode() {
 function switchToLoginMode() {
   isRegisterMode = false;
 
-  authTitleEl.textContent = "🔐 Anmeldung";
+  if (authTitleEl) authTitleEl.textContent = "🔐 Anmeldung";
 
-  authNameLabel.style.display = "none";
-  authNameInput.style.display = "none";
-  authNameInput.value = "";
+  if (authNameLabel) authNameLabel.style.display = "none";
+  if (authNameInput) {
+    authNameInput.style.display = "none";
+    authNameInput.value = "";
+  }
 
-  loginBtn.style.display = "block";
-  registerBtn.textContent = "Registrieren";
+  if (loginBtn) loginBtn.style.display = "block";
+  if (registerBtn) registerBtn.textContent = "Registrieren";
 
-  passwordHintEl.style.display = "none";
-  backToLoginBtn.style.display = "none";
+  if (passwordHintEl) passwordHintEl.style.display = "none";
+  if (backToLoginBtn) backToLoginBtn.style.display = "none";
 
-  passwordStatusEl.style.display = "none";
+  if (passwordStatusEl) passwordStatusEl.style.display = "none";
 
-  authEmailInput.value = "";
-  authPasswordInput.value = "";
+  if (authEmailInput) authEmailInput.value = "";
+  if (authPasswordInput) authPasswordInput.value = "";
 
   setAuthMessage("");
 }
 
 function showAuthUI() {
+  // Wenn wir auf index.html sind (kein authContainer) → auf auth.html umleiten
   if (!authContainer) return gotoAuthPage();
   switchToLoginMode();
   authContainer.style.display = "block";
 }
 
 function showAppUI() {
+  // Wenn wir auf auth.html sind (kein appRoot) → auf index.html umleiten
   if (!appRoot) return gotoAppPage();
 
   appRoot.style.display = "block";
@@ -143,50 +148,60 @@ function isStrongPassword(pw) {
 }
 
 // -------------------------------------------------------------
-// Event Listener
+// Event Listener (safe auf beiden Seiten)
 // -------------------------------------------------------------
 
 function setupEventListeners() {
   // Registrierung
-  registerBtn.addEventListener("click", () => {
-    if (!isRegisterMode) switchToRegisterMode();
-    else handleRegisterClick();
-  });
+  if (registerBtn) {
+    registerBtn.addEventListener("click", () => {
+      if (!isRegisterMode) switchToRegisterMode();
+      else handleRegisterClick();
+    });
+  }
 
   // Login
-  loginBtn.addEventListener("click", handleLoginClick);
+  if (loginBtn) {
+    loginBtn.addEventListener("click", handleLoginClick);
+  }
 
   // Zurück zum Login
-  backToLoginBtn.addEventListener("click", switchToLoginMode);
+  if (backToLoginBtn) {
+    backToLoginBtn.addEventListener("click", switchToLoginMode);
+  }
 
   // Passwort anzeigen
-  togglePasswordBtn.addEventListener("click", () => {
-    const isPw = authPasswordInput.type === "password";
-    authPasswordInput.type = isPw ? "text" : "password";
-    togglePasswordBtn.textContent = isPw ? "🙈" : "👁️";
-  });
+  if (togglePasswordBtn && authPasswordInput) {
+    togglePasswordBtn.addEventListener("click", () => {
+      const isPw = authPasswordInput.type === "password";
+      authPasswordInput.type = isPw ? "text" : "password";
+      togglePasswordBtn.textContent = isPw ? "🙈" : "👁️";
+    });
+  }
 
-  // LIVE Passwort Check (Variante C)
-  authPasswordInput.addEventListener("input", () => {
-    const pw = authPasswordInput.value;
+  // LIVE Passwort Check
+  if (authPasswordInput && passwordStatusEl) {
+    authPasswordInput.addEventListener("input", () => {
+      const pw = authPasswordInput.value;
 
-    if (!pw.length) {
-      passwordStatusEl.style.display = "none";
-      return;
-    }
+      if (!pw.length) {
+        passwordStatusEl.style.display = "none";
+        return;
+      }
 
-    passwordStatusEl.style.display = "block";
+      passwordStatusEl.style.display = "block";
 
-    if (isStrongPassword(pw)) {
-      passwordStatusEl.textContent = "✔ Passwort erfüllt alle Bedingungen";
-      passwordStatusEl.classList.add("valid");
-    } else {
-      passwordStatusEl.textContent = "❌ Passwort erfüllt noch nicht alle Bedingungen";
-      passwordStatusEl.classList.remove("valid");
-    }
-  });
+      if (isStrongPassword(pw)) {
+        passwordStatusEl.textContent = "✔ Passwort erfüllt alle Bedingungen";
+        passwordStatusEl.classList.add("valid");
+      } else {
+        passwordStatusEl.textContent = "❌ Passwort erfüllt noch nicht alle Bedingungen";
+        passwordStatusEl.classList.remove("valid");
+      }
+    });
+  }
 
-  // Logout
+  // Logout (nur auf index.html vorhanden)
   if (logoutBtn) {
     logoutBtn.addEventListener("click", handleLogoutClick);
   }
@@ -197,9 +212,9 @@ function setupEventListeners() {
 // -------------------------------------------------------------
 
 async function handleRegisterClick() {
-  const name = authNameInput.value.trim();
-  const email = authEmailInput.value.trim();
-  const password = authPasswordInput.value;
+  const name = authNameInput ? authNameInput.value.trim() : "";
+  const email = authEmailInput ? authEmailInput.value.trim() : "";
+  const password = authPasswordInput ? authPasswordInput.value : "";
 
   if (!name || !email || !password) {
     return setAuthMessage("Bitte alle Felder ausfüllen.");
@@ -249,8 +264,8 @@ async function handleRegisterClick() {
 // -------------------------------------------------------------
 
 async function handleLoginClick() {
-  const email = authEmailInput.value.trim();
-  const password = authPasswordInput.value;
+  const email = authEmailInput ? authEmailInput.value.trim() : "";
+  const password = authPasswordInput ? authPasswordInput.value : "";
 
   if (!email || !password) {
     return setAuthMessage("Bitte E-Mail und Passwort eingeben.");
@@ -295,15 +310,19 @@ async function handleLogoutClick() {
 // -------------------------------------------------------------
 
 async function initAuthOnLoad() {
-  // Prüfen ob User eingeloggt ist
-  const { data } = await supabaseClient.auth.getUser();
-
-  if (data?.user) {
-    // Wenn eingeloggt → direkt zur App (index.html)
-    window.location.href = "index.html";
+  if (!supabaseClient) {
+    showAuthUI();
     return;
   }
 
-  // Wenn NICHT eingeloggt → Login/Registrierung anzeigen
+  const { data } = await supabaseClient.auth.getUser();
+
+  if (data?.user) {
+    setCurrentUser(data.user.id);
+    const tree = await loadTreeFromSupabaseOrInitialize();
+    if (onTreeLoadedCallback) onTreeLoadedCallback(tree);
+    return showAppUI();
+  }
+
   showAuthUI();
 }
