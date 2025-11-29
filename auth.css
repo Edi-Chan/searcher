@@ -1,0 +1,249 @@
+/* =========================================
+   Reset & Basics
+   ========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #e5e7eb;
+  background: radial-gradient(circle at top, #1e293b 0, #020617 60%, #000);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+/* =========================================
+   Container
+   ========================================= */
+
+#authContainer {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* =========================================
+   Card
+   ========================================= */
+
+.auth-card {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(18px);
+  border-radius: 22px;
+  padding: 28px 24px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow Orbs */
+.auth-card::before,
+.auth-card::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(38px);
+  opacity: 0.28;
+}
+
+.auth-card::before {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.8), transparent);
+  top: -80px;
+  right: -60px;
+}
+
+.auth-card::after {
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.8), transparent);
+  bottom: -70px;
+  left: -50px;
+}
+
+/* =========================================
+   Titel
+   ========================================= */
+
+#authTitle {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 650;
+  color: #f8fafc;
+  letter-spacing: 0.03em;
+}
+
+/* =========================================
+   Labels & Inputs
+   ========================================= */
+
+label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #e5e7eb;
+  font-size: 1rem;
+  transition: all 0.15s ease;
+}
+
+input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  background: rgba(15, 23, 42, 0.97);
+}
+
+/* =========================================
+   Passwortfeld
+   ========================================= */
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.password-wrapper input {
+  padding-right: 46px;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  opacity: 0.75;
+  cursor: pointer;
+  color: #e5e7eb;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.toggle-password-btn:hover {
+  transform: translateY(-50%) scale(1.15);
+  opacity: 1;
+}
+
+/* =========================================
+   Passwort-Status UNTER dem Feld
+   ========================================= */
+
+.password-status {
+  font-size: 0.82rem;
+  margin-top: 4px;
+  padding-left: 4px;
+  color: #ef4444; /* rot, wenn falsch */
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+/* Wenn Passwort OK, JS setzt grün */
+.password-status.valid {
+  color: #22c55e;
+}
+
+/* =========================================
+   Hinweistext unter Passwort
+   ========================================= */
+
+.password-hint {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+/* =========================================
+   Buttons
+   ========================================= */
+
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: all 0.15s ease;
+}
+
+/* Primär (Login) */
+.btn.primary {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+  color: #032e23;
+}
+
+.btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(34, 197, 94, 0.55);
+}
+
+/* Sekundär */
+.btn.secondary {
+  background: rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+}
+
+.btn.secondary:hover {
+  background: rgba(30, 41, 59, 0.8);
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   Status / Fehlermeldung
+   ========================================= */
+
+.auth-message {
+  margin-top: 14px;
+  min-height: 1.1em;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #f87171;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+@media (min-width: 480px) {
+  .auth-card {
+    padding: 32px 28px;
+  }
+
+  #authTitle {
+    font-size: 1.85rem;
+  }
+}
+
+@media (min-width: 760px) {
+  #authContainer {
+    max-width: 500px;
+  }
+}

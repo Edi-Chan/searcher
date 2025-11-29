@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dokumenten-Organizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Logout-Button (sichtbar nach Login) -->
+  <button
+    id="logoutBtn"
+    class="btn btn-danger"
+    style="position:absolute; top:10px; right:10px; display:none;"
+  >
+    🔓 Logout
+  </button>
+
+  <!-- NUR DIE APP (kein Login/Registrierung mehr hier) -->
+  <div class="app" id="appRoot">
+    <header class="app-header">
+      <div>
+        <h1>Dokumenten-Organizer</h1>
+        <p class="subtitle">
+          Ordner &amp; Dokumentnamen verwalten – plus Upload &amp; Live-Vorschau.
+        </p>
+      </div>
+      <div class="header-actions">
+        <button id="addRootFolderBtn" class="btn btn-primary">
+          ➕ Top-Ordner hinzufügen
+        </button>
+        <button id="resetDemoBtn" class="btn btn-ghost">
+          Demo zurücksetzen
+        </button>
+        <button id="themeToggleBtn" class="btn btn-ghost">
+          🌞 Hell
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="sidebar">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2>Struktur</h2>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="search-row">
+              <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="Nach Namen/Notizen/Dokumentinhalt suchen..."
+                />
+                <span id="searchResultInfo" class="search-result-info"></span>
+              </div>
+              <button id="searchGoBtn" class="btn btn-secondary btn-xs">🔎</button>
+              <button id="searchResetBtn" class="btn btn-ghost btn-xs">Zurücksetzen</button>
+            </div>
+
+            <div class="search-row" style="margin-top:-4px;">
+              <button id="collapseAllBtn" class="btn btn-secondary btn-xs">
+                ▲ Alle einklappen
+              </button>
+              <button id="expandAllBtn" class="btn btn-secondary btn-xs">
+                ▼ Alle ausklappen
+              </button>
+            </div>
+
+            <div class="view-mode">
+              <span id="viewMode">Vollständige Ansicht</span>
+            </div>
+
+            <div id="treeContainer" class="tree-container"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="card main-card">
+          <div class="card-header main-card-header">
+            <div class="selected-headline">
+              <span id="selectedIcon" class="selected-icon">📁</span>
+              <div>
+                <div class="selected-title-row">
+                  <h2 id="selectedName">Root</h2>
+                  <span id="selectedTypeBadge" class="badge">Ordner</span>
+                </div>
+                <div id="breadcrumbs" class="breadcrumbs"></div>
+              </div>
+            </div>
+            <div class="selected-actions">
+              <button id="renameBtn" class="btn btn-secondary">✏️ Umbenennen</button>
+              <button id="deleteBtn" class="btn btn-danger">🗑️ Löschen</button>
+            </div>
+          </div>
+
+          <div class="card-body main-card-body">
+            <div class="main-columns">
+              <div class="left-column">
+                <div class="field">
+                  <label for="noteInput" class="field-label">Notizen zum Eintrag</label>
+                  <textarea
+                    id="noteInput"
+                    rows="6"
+                    placeholder="Hinweise, Status, Infos zum Ordner/Datei..."
+                  ></textarea>
+                </div>
+
+                <div id="folderActions" class="folder-actions">
+                  <div class="folder-actions-header">
+                    <h3>Unterordner &amp; Dateien</h3>
+                    <p class="muted">Nur verfügbar, wenn ein Ordner ausgewählt ist.</p>
+                  </div>
+                  <div class="folder-buttons">
+                    <button id="addSubfolderBtn" class="btn btn-secondary">
+                      📁 Ordner hinzufügen
+                    </button>
+                    <button id="addFileBtn" class="btn btn-secondary">
+                      📄 Dokument hinzufügen
+                    </button>
+                  </div>
+                </div>
+
+                <div id="fileActions" class="file-actions hidden">
+                  <div class="upload-row">
+                    <label class="field-label">Echte Dokumente hochladen</label>
+                    <div class="upload-inner-row">
+                      <button id="uploadBtn" class="btn btn-secondary">
+                        📤 Dokument(e) hochladen
+                      </button>
+                      <input
+                        type="file"
+                        id="uploadInput"
+                        class="hidden-input"
+                        multiple
+                        accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.txt,.csv,.xls,.xlsx,.doc,.docx"
+                      />
+                    </div>
+                  </div>
+                  <div id="uploadList" class="upload-list"></div>
+                </div>
+              </div>
+
+              <div class="right-column">
+                <div class="preview-header">
+                  <h3>Dokumenten-Vorschau</h3>
+                </div>
+                <div id="globalUploadList" class="global-upload-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="app-footer">
+          <small>&nbsp;</small>
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <!-- ZENTRIERTES POPUP-MODAL -->
+  <div id="appModal" class="app-modal hidden">
+    <div class="app-modal-dialog">
+      <div class="app-modal-header">
+        <h3 id="appModalTitle">Titel</h3>
+      </div>
+      <div class="app-modal-body">
+        <p id="appModalMessage"></p>
+        <input id="appModalInput" type="text" class="app-modal-input hidden" />
+      </div>
+      <div class="app-modal-footer">
+        <button id="appModalCancelBtn" class="btn btn-ghost btn-xs">Abbrechen</button>
+        <button id="appModalOkBtn" class="btn btn-secondary btn-xs">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase SDK -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- Supabase-Client initialisieren -->
+  <script>
+    const SUPABASE_URL = "https://zxzvwxktvqjctjdozfwd.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4enZ3eGt0dnFqY3RqZG96ZndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxODc0NDYsImV4cCI6MjA3OTc2MzQ0Nn0.2mOvG2Eu9cenktybwksbtLgmFCEQJ7XGKVrcV9kFJo0";
+
+    // global verfügbar für die Module
+    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+
+  <!-- Weitere Libraries -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+  <!-- Einstiegspunkt der App (ES Module, lädt die anderen JS-Dateien) -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>
