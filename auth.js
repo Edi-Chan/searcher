@@ -181,25 +181,32 @@ function setupEventListeners() {
 
   // LIVE Passwort Check
   if (authPasswordInput && passwordStatusEl) {
-    authPasswordInput.addEventListener("input", () => {
-      const pw = authPasswordInput.value;
+  authPasswordInput.addEventListener("input", () => {
+    const pw = authPasswordInput.value;
 
-      if (!pw.length) {
-        passwordStatusEl.style.display = "none";
-        return;
-      }
+    // Nur im REGISTRIERMODUS prüfen!
+    if (!isRegisterMode) {
+      passwordStatusEl.style.display = "none";
+      return;
+    }
 
-      passwordStatusEl.style.display = "block";
+    if (!pw.length) {
+      passwordStatusEl.style.display = "none";
+      return;
+    }
 
-      if (isStrongPassword(pw)) {
-        passwordStatusEl.textContent = "✔ Passwort erfüllt alle Bedingungen";
-        passwordStatusEl.classList.add("valid");
-      } else {
-        passwordStatusEl.textContent = "❌ Passwort erfüllt noch nicht alle Bedingungen";
-        passwordStatusEl.classList.remove("valid");
-      }
-    });
-  }
+    passwordStatusEl.style.display = "block";
+
+    if (isStrongPassword(pw)) {
+      passwordStatusEl.textContent = "✔ Passwort erfüllt alle Bedingungen";
+      passwordStatusEl.classList.add("valid");
+    } else {
+      passwordStatusEl.textContent = "❌ Passwort erfüllt noch nicht alle Bedingungen";
+      passwordStatusEl.classList.remove("valid");
+    }
+  });
+}
+
 
   // Logout (nur auf index.html vorhanden)
   if (logoutBtn) {
